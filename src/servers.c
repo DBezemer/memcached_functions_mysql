@@ -88,8 +88,6 @@ long long memc_servers_set(__attribute__ ((unused)) UDF_INIT *initid,
   uint64_t set= 1;
   memcached_return rc= 0;
   memcached_server_st *servers;
-  uint version;
-
 
   pthread_mutex_lock(&memc_servers_mutex);
 
@@ -118,16 +116,8 @@ long long memc_servers_set(__attribute__ ((unused)) UDF_INIT *initid,
     memc_behavior_set
   */
   memcached_version(master_memc);
-
-  version=  master_memc->hosts[0].major_version * 100 +
-            master_memc->hosts[0].minor_version * 10 +
-            master_memc->hosts[0].micro_version;
-
-  if (version >= 124)
-    memcached_behavior_set(master_memc, MEMCACHED_BEHAVIOR_SUPPORT_CAS, set);
-
+  memcached_behavior_set(master_memc, MEMCACHED_BEHAVIOR_SUPPORT_CAS, set);
   memcached_server_list_free(servers);
-
   pthread_mutex_unlock(&memc_servers_mutex);
 
   fprintf(stderr, "rc %d\n", rc);
