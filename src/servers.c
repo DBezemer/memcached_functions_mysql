@@ -88,6 +88,7 @@ long long memc_servers_set(__attribute__ ((unused)) UDF_INIT *initid,
   uint64_t set= 1;
   memcached_return rc= 0;
   memcached_server_st *servers;
+  uint version;
 
   pthread_mutex_lock(&memc_servers_mutex);
 
@@ -115,7 +116,9 @@ long long memc_servers_set(__attribute__ ((unused)) UDF_INIT *initid,
     enable cas by default. This can be undonw with
     memc_behavior_set
   */
+  /* disable version check
   memcached_version(master_memc);
+  */
   memcached_behavior_set(master_memc, MEMCACHED_BEHAVIOR_SUPPORT_CAS, set);
   memcached_server_list_free(servers);
   pthread_mutex_unlock(&memc_servers_mutex);
